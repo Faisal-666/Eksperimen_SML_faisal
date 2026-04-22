@@ -1,0 +1,35 @@
+name: run pipeline data
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup py 3.12.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.7'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run script
+        run: python preprocessing/automate_Faisal.py
+
+      - name: Commit results
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add preprocessing/diabetes_preprocessing
+          git diff --cached --quiet && exit 0
+          git commit -m "auto update dataset"
+          git push
