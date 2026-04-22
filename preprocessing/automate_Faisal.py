@@ -56,21 +56,18 @@ def run():
         ('scaler', StandardScaler())
     ])
 
-    x_train_preprocessed = full_pipeline.fit_transform(x_train)
-    x_test_preprocessed = full_pipeline.transform(x_test)
+    x_train_processed = full_pipeline.fit_transform(x_train)
+    x_test_processed = full_pipeline.transform(x_test)
 
-    feature_name = full_pipeline.named_steps['preprocessor'].get_feature_names_out()
+    feature_names = full_pipeline.named_steps['preprocessor'].get_feature_names_out()
 
-    x_train_preprocessed = pd.DataFrame(x_train_preprocessed, columns=feature_name)
-    x_test_preprocessed = pd.DataFrame(x_test_preprocessed, columns=feature_name)
+    x_train_processed = pd.DataFrame(x_train_processed, columns=feature_names)
+    x_test_processed = pd.DataFrame(x_test_processed, columns=feature_names)
 
-    x_train_preprocessed = x_train_preprocessed.reindex(columns=x_train.columns)
-    x_test_preprocessed = x_test_preprocessed.reindex(columns=x_test.columns)
-
-    train_df = x_train_preprocessed.copy()
+    train_df = x_train_processed.copy()
     train_df['Outcome'] = y_train.values
 
-    test_df = x_test_preprocessed.copy()
+    test_df = x_test_processed.copy()
     test_df['Outcome'] = y_test.values
 
     train_df.to_csv(TRAIN_PATH, index=False)
